@@ -74,6 +74,7 @@ public class Cell {
     public void plantFlag() {
         this.isFlagged = true;
     }
+
     public void open() {
         this.isOpened = true;
     }

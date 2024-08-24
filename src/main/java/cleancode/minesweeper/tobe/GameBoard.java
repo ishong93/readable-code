@@ -9,6 +9,9 @@ public class GameBoard {
     private final Cell[][] board;
     private final int rowSize, colSize;
 
+    public Cell findCell(int row, int col) {
+        return board[row][col];
+    }
     public GameBoard(int rowSize, int colSize) {
         board = new Cell[rowSize][colSize];
         this.rowSize = rowSize;
@@ -21,8 +24,7 @@ public class GameBoard {
 
         for (int row = 0; row < rowSize; row++) {
             for (int col = 0; col < colSize; col++) {
-                Cell cell = getCell(row, col);
-                cell = Cell.create();
+                board[row][col] = Cell.create();
             }
         }
 
@@ -50,14 +52,12 @@ public class GameBoard {
     }
 
     public void plantFlag(int row, int col) {
-        Cell cell = getCell(row, col);
-        cell.plantFlag();
+        board[row][col].plantFlag();
     }
 
     public boolean isLandMineCell(int row, int col) {
 //        return LAND_MINES[selectedRowIndex][selectedColIndex];
-        Cell cell = getCell(row, col);
-        return cell.isLandMine();
+        return board[row][col].isLandMine();
     }
 
     public void openWithSurroundingCells(int row, int col) {
@@ -68,11 +68,13 @@ public class GameBoard {
         if (isOpenedCell(row, col)) {
             return;
         }
+
+        openCell(row, col);
+
         if (isLandMineCell(row, col)) {
             return;
         }
 
-        openCell(row, col);
 //        if (NEARBY_LAND_MINE_COUNTS[row][col] != 0) {
         if (doesCellHaveLandMineCount(row, col))
 //        {
@@ -119,13 +121,11 @@ public class GameBoard {
     }
 
     public String getSign(int row, int col) {
-        Cell cell = getCell(row, col);
-        return cell.getSign();
+        return board[row][col].getSign();
     }
 
     private void turnOnLandMine(int row, int col) {
-        Cell cell = getCell(row, col);
-        cell.turnOnLandMine();
+        board[row][col].turnOnLandMine();
     }
 
     private int countSurroundingLandMines(int row, int col) {
@@ -158,8 +158,7 @@ public class GameBoard {
     }
 
     private void updateLandMineCount(int row, int col, int count) {
-        Cell cell = getCell(row, col);
-        cell.updateNearByLandMineCount(count);
+        board[row][col].updateNearByLandMineCount(count);
     }
 
     private Cell getCell(int row, int col) {
@@ -167,18 +166,15 @@ public class GameBoard {
     }
 
     private void openCell(int row, int col) {
-        Cell cell = getCell(row, col);
-        cell.open();
+        board[row][col].open();
     }
 
     private boolean isOpenedCell(int row, int col) {
-        Cell cell = board[row][col];
-        return cell.isOpened();
+        return board[row][col].isOpened();
     }
 
     private boolean doesCellHaveLandMineCount(int row, int col) {
-        Cell cell = getCell(row, col);
-        return cell.hasLandMineCount();
+        return board[row][col].hasLandMineCount();
     }
 
 }
