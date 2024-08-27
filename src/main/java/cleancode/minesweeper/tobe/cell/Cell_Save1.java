@@ -1,6 +1,6 @@
-package cleancode.minesweeper.tobe;
+package cleancode.minesweeper.tobe.cell;
 
-public class Cell {
+public class Cell_Save1 {
 
     private static final String FLAG_SIGN = "⚑";
     private static final String LAND_MINE_SIGN = "☼";
@@ -15,7 +15,7 @@ public class Cell {
 
     // Cell이 가진 속성 : 근처 지뢰 숫자, 지뢰 여부
     // Cell의 상태 : 깃발 유무, 열렸다 / 닫혔다, 사용자가 확인함
-    public Cell(String sign, int nearbyLandMineCount, boolean isLandMine, boolean isFlagged, boolean isOpened) {
+    public Cell_Save1(String sign, int nearbyLandMineCount, boolean isLandMine, boolean isFlagged, boolean isOpened) {
         this.sign = sign;
         this.nearbyLandMineCount = nearbyLandMineCount;
         this.isLandMine = isLandMine;
@@ -23,8 +23,8 @@ public class Cell {
         this.isOpened = isOpened;
     }
 
-    public static Cell of(String sign, int nearbyLandMineCount, boolean isLandMine, boolean isFlagged, boolean isOpened) {
-        return new Cell(sign, nearbyLandMineCount, isLandMine, isFlagged, isOpened);
+    public static Cell_Save1 of(String sign, int nearbyLandMineCount, boolean isLandMine, boolean isFlagged, boolean isOpened) {
+        return new Cell_Save1(sign, nearbyLandMineCount, isLandMine, isFlagged, isOpened);
     }
 
 //    public static Cell ofFlag() {
@@ -47,8 +47,8 @@ public class Cell {
 //        return new Cell(String.valueOf(count), count, false, false, false);
 //    }
 
-    public static Cell create() {
-        return new Cell("", 0, false, false, false);
+    public static Cell_Save1 create() {
+        return new Cell_Save1("", 0, false, false, false);
     }
 
     public boolean equalsSign(String sign) {
