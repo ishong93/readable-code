@@ -3,12 +3,11 @@ package cleancode.minesweeper.tobe;
 import cleancode.minesweeper.tobe.cell.*;
 import cleancode.minesweeper.tobe.gameLevel.GameLevel;
 import cleancode.minesweeper.tobe.position.CellPosition;
+import cleancode.minesweeper.tobe.position.CellPositions;
 import cleancode.minesweeper.tobe.position.RelativePosition;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Stream;
 
 public class GameBoard {
     public static final int LAND_MINE_COUNT = 10;
@@ -38,37 +37,72 @@ public class GameBoard {
 
     public void initializeGame() {
 
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < colSize; col++) {
-//                board[row][col] = Cell.create();
-                board[row][col] = new EmptyCell();
-            }
-        }
+        CellPositions cellPositions = CellPositions.from(board);
 
-        for (int i = 0; i < landMineCount; i++) {
-            int col = new Random().nextInt(colSize);
-            int row = new Random().nextInt(rowSize);
+        initilizeEmptyCells(cellPositions);
 
-            turnOnLandMine(row, col);
-        }
+//        for (int row = 0; row < rowSize; row++) {
+//            for (int col = 0; col < colSize; col++) {
+////                board[row][col] = Cell.create();
+//                board[row][col] = new EmptyCell();
+//            }
+//        }
 
-        for (int row = 0; row < rowSize; row++) {
-            for (int col = 0; col < colSize; col++) {
-                CellPosition cellPosition = new CellPosition(row, col);
-                if (hasLandMineAt(cellPosition)) {
-                    continue;
-                }
+        List<CellPosition> landMinePositions = cellPositions.extractRandomPositions(landMineCount);
+        initializeLandMineCells(landMinePositions);
 
-                int count = countSurroundingLandMines(cellPosition);
+//        for (int i = 0; i < landMineCount; i++) {
+//            int col = new Random().nextInt(colSize);
+//            int row = new Random().nextInt(rowSize);
+//
+//            turnOnLandMine(row, col);
+//        }
 
-                if (count == 0) continue;
+        List<CellPosition> numberPositionCandidates = cellPositions.subtract(landMinePositions);
+        initializeNumberCells(numberPositionCandidates);
+//        for (int row = 0; row < rowSize; row++) {
+//            for (int col = 0; col < colSize; col++) {
+//                CellPosition cellPosition = new CellPosition(row, col);
+//                if (hasLandMineAt(cellPosition)) {
+//                    continue;
+//                }
+//
+//                int count = countSurroundingLandMines(cellPosition);
+//
+//                if (count == 0) continue;
+//
+//                updateLandMineCount(row, col, count);
+//            }
+//        }
+    }
 
-                updateLandMineCount(row, col, count);
+    private void initializeNumberCells(List<CellPosition> numberPositionCandidates) {
+        for (CellPosition candidatePosition : numberPositionCandidates) {
+            int count = countSurroundingLandMines(candidatePosition);
+            if (count != 0) {
+                updateCellAt(candidatePosition, new NumberCell(count));
             }
         }
     }
 
-//    public void plantFlag(int row, int col) {
+    private void initilizeEmptyCells(CellPositions cellPositions) {
+        List<CellPosition> allPositions = cellPositions.getPositions();
+        for (CellPosition position : allPositions) {
+            updateCellAt(position, new EmptyCell());
+        }
+    }
+
+    private void initializeLandMineCells(List<CellPosition> landMinePositions) {
+        for (CellPosition position : landMinePositions) {
+            updateCellAt(position, new LandMineCell());
+        }
+    }
+
+    private void updateCellAt(CellPosition position, Cell cell) {
+        board[position.getRowIndex()][position.getColIndex()] = cell;
+    }
+
+    //    public void plantFlag(int row, int col) {
 //        board[row][col].plantFlag();
 //    }
     public void plantFlagAt(CellPosition cellPosition) {
@@ -100,6 +134,11 @@ public class GameBoard {
 //                .noneMatch(cell -> cell.isClosed());
 //                .noneMatch(Cell::isUnchecked);
                 .allMatch(Cell::isChecked);
+    }
+
+    public boolean isAllCellChecked2() {
+        Cells cells = Cells.from(board);
+        return cells.isAllChecked();
     }
 
     public boolean isInvalidCellPosition(CellPosition cellPosition) {
